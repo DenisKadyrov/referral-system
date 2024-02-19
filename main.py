@@ -1,4 +1,3 @@
-# lib for import debugpy, platform
 from database import DataBase
 
 from fastapi import FastAPI, Body
@@ -28,11 +27,14 @@ async def register(user: User, ref_code: Annotated[str, Body(min_length=6, max_l
     check_user = db.fetchone(f"SELECT EXISTS(SELECT Email FROM users WHERE Email=\'{user.email}\')")
     if check_user == (False,):
         db.execute(f"INSERT INTO users (FirstName, LastName, Email) VALUES (\'{user.firstName}\', \'{user.lastName}\', \'{user.email}\')")
+        db.execute(f"INSERT INTO referals (id) VALUES ((SELECT id FROM users WHERE Email=\'{user.email}\'))")
         db.commit()
-        return "Register sucsessfully"
     
-    if not ref_conde:
+    if ref_code:
+        print("hre")
         refer_id = db.fetchone(f"SELECT id FROM users WHERE Code=\'{ref_code}\'")[0]
-        
+        print(refer_id)
+        db.execute(f"UPDATE referals SET refer={refer_id} WHERE id=(SELECT id FROM users WHERE Email=\'{user.email}\')")
+        db.commit()
 
-    return "critical"
+    return "Regiser critical"
