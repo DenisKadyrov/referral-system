@@ -1,9 +1,10 @@
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  FirstName VARCHAR(15) NOT NULL,
-  LastName VARCHAR(15) NOT NULL, 
-  Email VARCHAR(30) NOT NULL,
-  Code VARCHAR(6)
+  first_name VARCHAR(15) NOT NULL,
+  last_name VARCHAR(15) NOT NULL, 
+  email VARCHAR(30) NOT NULL,
+  code VARCHAR(6),
+  password VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE referals (
