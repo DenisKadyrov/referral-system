@@ -21,9 +21,6 @@ class User(BaseModel):
     email: str = Field(min_length=11, max_length=30),
     password: str = Field(min_length=8, max_length=15)
  
-@app.on_event("startup")
-async def startup():
-    pass
 
 @app.post("/register")
 async def register(user: User, ref_code: Annotated[str, Body(min_length=6, max_length=6)] = None):
@@ -71,6 +68,6 @@ async def login(userdetails: OAuth2PasswordRequestForm = Depends()):
 
 @app.get('/create_code')
 async def me(user: User = Depends(get_current_user)):
-    db.execute(f"UPDATE users SET code=\'3kg5kd\' WHERE id={user['id']}")
+    db.execute(f"UPDATE users SET code=(SELECT random_string(6)) WHERE id={user['id']}")
     db.commit()
     return user
