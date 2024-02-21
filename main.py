@@ -33,6 +33,7 @@ async def register(user: User, ref_code: Annotated[str, Body(min_length=6, max_l
     """
     hashed_pass = hash_pass(user.password)
     check_user = db.fetchone(f"SELECT EXISTS(SELECT email FROM users WHERE email=\'{user.email}\')")
+
     if check_user == (False,):
         db.execute(f"INSERT INTO users (first_name, last_name, email, password) VALUES (\'{user.firstName}\', \'{user.lastName}\', \'{user.email}\', \'{hashed_pass}\')")
         db.execute(f"INSERT INTO referals (id) VALUES ((SELECT id FROM users WHERE email=\'{user.email}\'))")
@@ -43,8 +44,10 @@ async def register(user: User, ref_code: Annotated[str, Body(min_length=6, max_l
                 refer_id = db.fetchone(f"SELECT id FROM users WHERE code=\'{ref_code}\'")[0]
                 db.execute(f"UPDATE referals SET refer={refer_id} WHERE id=(SELECT id FROM users WHERE email=\'{user.email}\')")
                 db.commit()
+
             except:
                 return "not code"
+
     return "Sucsessfull"
  
 
