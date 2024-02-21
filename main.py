@@ -71,3 +71,10 @@ async def me(user: User = Depends(get_current_user)):
     db.execute(f"UPDATE users SET code=(SELECT random_string(6)) WHERE id={user['id']}")
     db.commit()
     return user
+
+
+@app.delete("/delete_code")
+async def del_code(user: User = Depends(get_current_user)):
+    db.execute(f"UPDATE users SET code=NULL WHERE id={user['id']}")
+    db.commit()
+    return user
